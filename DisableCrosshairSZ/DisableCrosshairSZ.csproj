@@ -40,6 +40,9 @@
     <Reference Include="QModInstaller">
       <HintPath>D:\SteamWin\steamapps\common\SubnauticaZero\BepInEx\plugins\QModManager\QModInstaller.dll</HintPath>
     </Reference>
+    <Reference Include="SMLHelper">
+      <HintPath>D:\SteamWin\steamapps\common\SubnauticaZero\QMods\SMLHelper_BZ\SMLHelper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,11 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrosshairOptions.cs" />
     <Compile Include="CrosshairPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="CrosshairMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="D:\SteamWin\steamapps\common\SubnauticaZero\QMods\SMLHelper_BZ\SMLHelper.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

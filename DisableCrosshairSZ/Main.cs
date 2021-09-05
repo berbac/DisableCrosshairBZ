@@ -1,4 +1,6 @@
-﻿using QModManager.API.ModLoading;
+﻿using HarmonyLib;
+using QModManager.API.ModLoading;
+using System.Reflection;
 
 namespace DisableCrosshairSZ
 {
@@ -8,10 +10,8 @@ namespace DisableCrosshairSZ
         [QModPatch]
         public static void Initialize()
         {
-            
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "DisableCrosshairSZ");
             CrosshairMenu.Patch();
-
-
         }
 
     }

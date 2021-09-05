@@ -1,38 +1,47 @@
 ﻿using HarmonyLib;
-using System;
-using System.IO;
-using UnityEngine;
-
 
 namespace DisableCrosshairSZ
 {
-    [HarmonyPatch(typeof(MainCameraControl), "Update")]
+    [HarmonyPatch(typeof(uGUI), "Update")]
     public static class CrosshairPatcher
     {
-        private static bool NoCrosshairInSeatruck => CrosshairOptions.NoCrosshairInSeatruck;
         private static bool _crosshairOff;
 
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            File.AppendAllText("Seatruck_Seat_Event.txt", "Acting..." + Environment.NewLine);
-            if (NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair)
+            if (_crosshairOff != true && CrosshairMenu.Config.DisableCrosshair)
             {
-                File.AppendAllText("Seatruck_Seat_Event.txt", "Sitting in seatruck, crosshair off" + Environment.NewLine);
+                _crosshairOff = true;
+                return false;
+            }
+            else if (_crosshairOff && CrosshairMenu.Config.DisableCrosshair)
+            {
+                return false;
+            }
+
+            else if (_crosshairOff != true &&
+                ((CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
+                (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit)))
+
+            {
                 HandReticle.main.RequestCrosshairHide();
                 _crosshairOff = true;
                 return false;
             }
 
-            else if (NoCrosshairInSeatruck && !_crosshairOff)
+            else if (_crosshairOff &&
+                ((!Player.main.inExosuit && !Player.main.inSeatruckPilotingChair) ||
+                (Player.main.inExosuit && !CrosshairMenu.Config.NoCrosshairInPrawnSuit) ||
+                (Player.main.inSeatruckPilotingChair && !CrosshairMenu.Config.NoCrosshairInSeatruck)))
             {
-                File.AppendAllText("Seatruck_Seat_Event.txt", "Sitting in seatruck, crosshair on" + Environment.NewLine);
                 HandReticle.main.UnrequestCrosshairHide();
                 _crosshairOff = false;
                 return false;
             }
             return true;
         }
-
     }
+
 }
+

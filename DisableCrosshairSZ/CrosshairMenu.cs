@@ -1,34 +1,41 @@
-﻿using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
+using SMLHelper.V2.Json;
 
-//namespace DisableCrosshairSZ
-public static class CrosshairMenu
+namespace DisableCrosshairSZ
 {
+    public class CrosshairOptions : ConfigFile
+    { // these are the default values
+        public bool NoCrosshairInSeatruck = false; 
+        public bool NoCrosshairInPrawnSuit = false;
+        public bool DisableCrosshair = false;
+    }
+    public static class CrosshairMenu
+    {
+        public static CrosshairOptions Config { get; } = new CrosshairOptions();
         private static Harmony _harmony;
-        private static int _tabIndex;
 
+        [HarmonyPatch(typeof(uGUI_OptionsPanel), "Update")]
         public static void Patch()
         {
+            Config.Load(); // load crosshair config in config.json
             _harmony = new Harmony("com.berbac.subnautica.disablecrosshair.mod");
             _harmony.Patch(AccessTools.Method(typeof(uGUI_OptionsPanel), "AddGeneralTab", null, null), null, new HarmonyMethod(typeof(CrosshairMenu).GetMethod("AddGerneralTab_Postfix")), null);
-            _harmony.Patch(AccessTools.Method(typeof(uGUI_TabbedControlsPanel), "AddTab", null, null), null, new HarmonyMethod(typeof(CrosshairMenu).GetMethod("AddTab_Postfix")), null);
-            _harmony.Patch(AccessTools.Method(typeof(GameSettings), "SerializeCrosshaairSettings", null, null), null, new HarmonyMethod(typeof(CrosshairMenu).GetMethod("SerializeCrosshaairSettings_Postfix")), null);
+            _harmony.Patch(AccessTools.Method(typeof(GameSettings), "SerializeSettings", null, null), null, new HarmonyMethod(typeof(CrosshairMenu).GetMethod("SerializeSettings_Postfix")), null);
+        }
+
+        public static void AddGerneralTab_Postfix(uGUI_OptionsPanel __instance)
+        {
+            __instance.AddHeading(0, "Crosshair");
+            __instance.AddToggleOption(0, "No crosshair while piloting seatruck", Config.NoCrosshairInSeatruck, (bool v) => Config.NoCrosshairInSeatruck = v);
+            __instance.AddToggleOption(0, "No crosshair while piloting prawn suit", Config.NoCrosshairInPrawnSuit, (bool v) => Config.NoCrosshairInPrawnSuit = v);
+            __instance.AddToggleOption(0, "Disable crosshair completely", Config.DisableCrosshair, (bool v) => Config.DisableCrosshair = v);
+        }
+
+        public static void SerializeSettings_Postfix(GameSettings.ISerializer serializer)
+        {
+            Config.Save(); // save crosshair config in config.json
+        }
+
     }
 
-
-    public static void AddGerneralTab_Postfix(uGUI_OptionsPanel __instance)
-    {
-        __instance.AddHeading(_tabIndex, "Crosshair");
-        __instance.AddToggleOption(_tabIndex, "No crosshair while piloting seatruck", CrosshairOptions.NoCrosshairInSeatruck, (bool v) => CrosshairOptions.NoCrosshairInSeatruck = v);
-    }
-
-    public static void AddTab_Postfix(int __result, string label)
-    {
-        if (label.Equals("General"))
-            _tabIndex = __result;
-    }
-    public static void SerializeCrosshaairSettings_Postfix(GameSettings.ISerializer serializer)
-    {
-        CrosshairOptions.NoCrosshairInSeatruck = serializer.Serialize("NoCrosshairInSeatruck", CrosshairOptions.NoCrosshairInSeatruck);
-    }
 }
