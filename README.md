@@ -1,4 +1,4 @@
-# DisableCrosshairSZ
+# DisableCrosshairBZ
 
 Adds three options to the "General" tab of the Subnautica Below Zero options menu:
 
