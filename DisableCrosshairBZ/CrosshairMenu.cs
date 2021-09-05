@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using SMLHelper.V2.Json;
 
-namespace DisableCrosshairSZ
+namespace DisableCrosshairBZ
 {
     public class CrosshairOptions : ConfigFile
     { // these are the default values

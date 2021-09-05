@@ -2,7 +2,7 @@
 using QModManager.API.ModLoading;
 using System.Reflection;
 
-namespace DisableCrosshairSZ
+namespace DisableCrosshairBZ
 {
     [QModCore]
     public static class Loader
@@ -10,7 +10,7 @@ namespace DisableCrosshairSZ
         [QModPatch]
         public static void Initialize()
         {
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "DisableCrosshairSZ");
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "DisableCrosshairBZ");
             CrosshairMenu.Patch();
         }
 

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace DisableCrosshairSZ
+namespace DisableCrosshairBZ
 {
     [HarmonyPatch(typeof(uGUI), "Update")]
     public static class CrosshairPatcher

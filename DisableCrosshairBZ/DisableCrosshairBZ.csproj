@@ -7,8 +7,8 @@
     <ProjectGuid>{DE28C4D2-9057-45E3-86E2-2BD8F1DB2FFC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DisableCrosshairSZ</RootNamespace>
-    <AssemblyName>DisableCrosshairSZ</AssemblyName>
+    <RootNamespace>DisableCrosshairBZ</RootNamespace>
+    <AssemblyName>DisableCrosshairBZ</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -72,6 +72,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)bin\Debug\DisableCrosshairSZ.dll" "D:\SteamWin\steamapps\common\SubnauticaZero\QMods\DisableCrosshairSZ"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)bin\Debug\DisableCrosshairBZ.dll" "D:\SteamWin\steamapps\common\SubnauticaZero\QMods\DisableCrosshairBZ"</PostBuildEvent>
   </PropertyGroup>
 </Project>
