@@ -1,5 +1,4 @@
 # DisableCrosshairSZ
-Crosshair disabler for Subnautica Below Zero
 
 Adds three options to the "General" tab of the Subnautica Below Zero options menu:
 
