@@ -12,6 +12,7 @@ namespace DisableCrosshairBZ
         {
             if (_crosshairOff != true && CrosshairMenu.Config.DisableCrosshair)
             {
+                HandReticle.main.RequestCrosshairHide();
                 _crosshairOff = true;
                 return false;
             }
