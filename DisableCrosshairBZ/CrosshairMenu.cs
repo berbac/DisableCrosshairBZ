@@ -26,9 +26,9 @@ namespace DisableCrosshairBZ
         public static void AddGerneralTab_Postfix(uGUI_OptionsPanel __instance)
         {
             __instance.AddHeading(0, "Crosshair");
-            __instance.AddToggleOption(0, "No crosshair while piloting seatruck", Config.NoCrosshairInSeatruck, (bool v) => Config.NoCrosshairInSeatruck = v);
-            __instance.AddToggleOption(0, "No crosshair while piloting prawn suit", Config.NoCrosshairInPrawnSuit, (bool v) => Config.NoCrosshairInPrawnSuit = v);
-            __instance.AddToggleOption(0, "Disable crosshair completely", Config.DisableCrosshair, (bool v) => Config.DisableCrosshair = v);
+            __instance.AddToggleOption(0, "Hidden while piloting seatruck", Config.NoCrosshairInSeatruck, (bool v) => Config.NoCrosshairInSeatruck = v);
+            __instance.AddToggleOption(0, "Hidden while in prawn suit", Config.NoCrosshairInPrawnSuit, (bool v) => Config.NoCrosshairInPrawnSuit = v);
+            __instance.AddToggleOption(0, "Always hidden", Config.DisableCrosshair, (bool v) => Config.DisableCrosshair = v);
         }
 
         public static void SerializeSettings_Postfix(GameSettings.ISerializer serializer)
