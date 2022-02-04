@@ -1,32 +1,36 @@
 ﻿using HarmonyLib;
+using System;
+using System.IO;
 
 namespace DisableCrosshairBZ
 {
+
+
     [HarmonyPatch(typeof(uGUI), "Update")]
     public static class CrosshairPatcher
     {
-        private static bool _crosshairOff = false;
+
+        internal static bool _crosshairOff;
 
         public static bool Prefix()
         {
-            if (!_crosshairOff && CrosshairMenu.Config.DisableCrosshair)
+            if (_crosshairOff && CrosshairMenu.Config.DisableCrosshairCompletely)
+            {
+                return true;
+            }
+
+            else if (!_crosshairOff && CrosshairMenu.Config.DisableCrosshairCompletely)
             {
                 HandReticle.main.RequestCrosshairHide();
                 _crosshairOff = true;
                 return false;
             }
 
-            else if (_crosshairOff && CrosshairMenu.Config.DisableCrosshair)
-            {
-                return false;
-            }
-
-            else if (!_crosshairOff &&
+            if (!_crosshairOff &&
                 ((CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
                 (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit)))
             {
                 HandReticle.main.RequestCrosshairHide();
-                _crosshairOff = true;
                 return false;
             }
 
@@ -42,6 +46,8 @@ namespace DisableCrosshairBZ
 
             return true;
         }
+
     }
+
 }
 
