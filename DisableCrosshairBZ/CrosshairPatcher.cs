@@ -31,6 +31,7 @@ namespace DisableCrosshairBZ
                 (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit)))
             {
                 HandReticle.main.RequestCrosshairHide();
+                _crosshairOff = true;
                 return false;
             }
 
