@@ -66,6 +66,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="CrosshairMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_crosshairOff.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="D:\SteamWin\steamapps\common\SubnauticaZero\QMods\SMLHelper_BZ\SMLHelper.dll" />
