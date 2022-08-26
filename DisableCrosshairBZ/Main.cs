@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using QModManager.API.ModLoading;
-using System.Reflection;
 
 namespace DisableCrosshairBZ
 {
@@ -10,7 +9,8 @@ namespace DisableCrosshairBZ
         [QModPatch]
         public static void Initialize()
         {
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "DisableCrosshairBZ");
+            Harmony.CreateAndPatchAll(typeof(CrosshairPatcher), "com.berbac.subnauticabz.disablecrosshair.mod");
+            //Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "DisableCrosshairBZ");
             CrosshairMenu.Patch();
         }
 

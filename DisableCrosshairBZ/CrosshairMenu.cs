@@ -27,7 +27,7 @@ namespace DisableCrosshairBZ
         {
             __instance.AddHeading(0, "Hide Crosshair");
             __instance.AddToggleOption(0, "While Piloting Seatruck", Config.NoCrosshairInSeatruck, (bool v) => Config.NoCrosshairInSeatruck = v);
-            __instance.AddToggleOption(0, "In Prawn Suit", Config.NoCrosshairInPrawnSuit, (bool v) => Config.NoCrosshairInPrawnSuit = v);
+            __instance.AddToggleOption(0, "Whike in Prawn Suit", Config.NoCrosshairInPrawnSuit, (bool v) => Config.NoCrosshairInPrawnSuit = v);
             __instance.AddToggleOption(0, "While Walking/Swimming", Config.NoCrosshairOnFoot, (bool v) => Config.NoCrosshairOnFoot = v);
         }
 

@@ -1,29 +1,45 @@
 ﻿using HarmonyLib;
+using System;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 
 namespace DisableCrosshairBZ
 {
-    [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
+
+
+    [HarmonyPatch]
     public static class CrosshairPatcher
     {
         internal static bool _crosshairOff;
-        public static void Postfix(GUIHand __instance)
+        internal static string[] showCrosshairInHere = { "MapRoomFunctionality", "SeaTruckSleeperModule", "Jukebox" };
+
+        //public static TargetType guiHand;
+/*        [HarmonyPatch(typeof(InteractionVolume), "GetTargetType")]
+        [HarmonyPrefix]
+        public static void SetGrabMode_Prefix(EcoTarget __instance)
         {
-            /*              Targeting.GetTarget(Player.main.gameObject, 50, out var tar, out var num);
-                            File.AppendAllText("DisableCrosshairSNLog.txt", "\n __instance.GetActiveTarget() : " + __instance.GetActiveTarget() +
-                               "\ntar : "+ tar );*/
+            guiHand = __instance.type;
+            //File.AppendAllText("DisableCrosshairBZLog2.txt", "\n     (I): GUIHand.grabMode val : " + ___grabMode);
+        }*/
 
-
+        [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
+        [HarmonyPostfix]
+        public static void OnUpdate_Prefix(GUIHand __instance, GameObject ___activeTarget)
+        {
             if (Player.main == null) // skip this if no Player.main instance exists
                 return;
             
-            var activeTarget = __instance.GetActiveTarget();
-            //File.AppendAllText("DisableCrosshairSNLog.txt", "\n __instance2.text : " + __instance2.text);
 
+            // check if CH needs to be enabled for interaction
+            Targeting.GetTarget(Player.mainObject, 10, out GameObject getTarget, out float _);
+            CraftData.GetTechType(getTarget, out var techType);
+            var targetNeedsCrosshair = __instance.GetActiveTarget() || Array.Exists(showCrosshairInHere, element => element == techType.ToString().Split('(')[0]);
+
+            File.AppendAllText("DisableCrosshairBZLog.txt", "\n Aiming at : " + techType.ToString().Split('(')[0]);
             if (_crosshairOff)
             {
-                if ((activeTarget && !Player.main.inSeatruckPilotingChair && !Player.main.inExosuit))// || crosshairHasText)
+                if ((targetNeedsCrosshair && !Player.main.inSeatruckPilotingChair && !Player.main.inExosuit))// || crosshairHasText)
                 {
                     HandReticle.main.UnrequestCrosshairHide();
                     _crosshairOff = false;
@@ -46,7 +62,7 @@ namespace DisableCrosshairBZ
 
             else //(!_crosshairOff)
             {
-                if ((activeTarget && !(Player.main.inSeatruckPilotingChair || Player.main.inExosuit)))// || crosshairHasText)
+                if ((targetNeedsCrosshair && !(Player.main.inSeatruckPilotingChair || Player.main.inExosuit)))// || crosshairHasText)
                     return;
 
                 else if (CrosshairMenu.Config.NoCrosshairOnFoot && Player.main.currentMountedVehicle == null)
@@ -66,44 +82,3 @@ namespace DisableCrosshairBZ
         }
     }
 }
-
-/*        public static bool Prefix()
-        {
-            if (_crosshairOff && CrosshairMenu.Config.NoCrosshairOnFoot)
-            {
-                return true;
-            }
-
-            else if (!_crosshairOff && CrosshairMenu.Config.NoCrosshairOnFoot)
-            {
-                HandReticle.main.RequestCrosshairHide();
-                _crosshairOff = true;
-                return false;
-            }
-
-            if (!_crosshairOff &&
-                ((CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
-                (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit)))
-            {
-                HandReticle.main.RequestCrosshairHide();
-                _crosshairOff = true;
-                return false;
-            }
-
-            else if (_crosshairOff &&
-                ((!Player.main.inExosuit && !Player.main.inSeatruckPilotingChair) ||
-                (Player.main.inExosuit && !CrosshairMenu.Config.NoCrosshairInPrawnSuit) ||
-                (Player.main.inSeatruckPilotingChair && !CrosshairMenu.Config.NoCrosshairInSeatruck)))
-            {
-                HandReticle.main.UnrequestCrosshairHide();
-                _crosshairOff = false;
-                return false;
-            }
-
-            return true;
-        }
-
-    }
-
-}
-*/
