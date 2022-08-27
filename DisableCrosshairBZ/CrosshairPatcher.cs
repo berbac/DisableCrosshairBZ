@@ -14,18 +14,30 @@ namespace DisableCrosshairBZ
 
         [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
         [HarmonyPostfix]
-        public static void OnUpdate_Prefix(GUIHand __instance)
+        public static void OnUpdate_Postfix(GUIHand __instance)
         {
             if (Player.main == null) // skip this if no Player.main instance exists
                 return;
-            
-            // check if CH needs to be enabled for interaction
-            Targeting.GetTarget(Player.mainObject, 10, out GameObject getTarget, out float _);
-            CraftData.GetTechType(getTarget, out var techType);
-            bool targetNeedsCrosshair = __instance.GetActiveTarget() ||
-                (Array.Exists(showCrosshairWhilePointingAt, element => element == techType.ToString().Split('(')[0]) && Player.main.IsInsideWalkable());
 
-            //File.AppendAllText("DisableCrosshairBZLog.txt", "\n ___activeTarget : " + ___activeTarget);
+
+            // check if CH needs to be enabled for interaction
+            //File.AppendAllText("DisableCrosshairBZLog.txt", "\n____________________________\nVor dem Aufruf!" + getTarget);
+            string techType;
+            try
+            {
+                Targeting.GetTarget(Player.main.gameObject, 10, out GameObject getTarget, out float _);
+                CraftData.GetTechType(getTarget, out var _techType);
+                techType = _techType.ToString();
+            }
+            catch (NullReferenceException)
+            {
+                techType = "";
+            }
+            var activeTarget = __instance.GetActiveTarget();
+            bool targetNeedsCrosshair = activeTarget || //&& !activeTarget.ToString().Contains("underWater")) ||
+                (Array.Exists(showCrosshairWhilePointingAt, element => element == techType.Split('(')[0]) && Player.main.IsInsideWalkable());
+
+            File.AppendAllText("DisableCrosshairBZLog.txt", "\n Block läuft!\n_______________________________");
 
             if (_crosshairOff)
             {
