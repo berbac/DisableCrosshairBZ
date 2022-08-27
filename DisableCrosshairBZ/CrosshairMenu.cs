@@ -9,6 +9,7 @@ namespace DisableCrosshairBZ
         public bool NoCrosshairInPrawnSuit = false;
         public bool NoCrosshairOnFoot = false;
     }
+
     public static class CrosshairMenu
     {
         public static CrosshairOptions Config { get; } = new CrosshairOptions();
@@ -35,7 +36,5 @@ namespace DisableCrosshairBZ
         {
             Config.Save(); // save crosshair config to config.json
         }
-
     }
-
 }
