@@ -30,6 +30,7 @@ namespace DisableCrosshairBZ
             // getting techType for map room screen, jukebox etc.
             // check if CH needs to be enabled for interaction while on foot/swimming
             // try-catch needed -> throws error if no target in range
+
             try
             {
                 Targeting.GetTarget(Player.main.gameObject, 10, out GameObject getTarget, out float _);
