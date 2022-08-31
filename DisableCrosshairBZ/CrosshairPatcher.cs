@@ -11,7 +11,7 @@ namespace DisableCrosshairBZ
     public static class CrosshairPatcher
     {
         internal static bool crosshairIsOff;
-        internal static string[] showCrosshairWhilePointingAt = { "MapRoomFunctionality", "SeaTruckSleeperModule", "Jukebox" }; // special cases to show crosshair
+        internal static string[] showCrosshairWhilePointingAt = { "MapRoomFunctionality(Clone)", "SeaTruckSleeperModule(Clone)", "Jukebox(Clone)" }; // special cases to show crosshair
         internal static string techType;
         internal static bool textHand;
 
@@ -24,44 +24,39 @@ namespace DisableCrosshairBZ
 
         [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
         [HarmonyPostfix]
-        public static void OnUpdate_Postfix(GUIHand __instance)
+        public static void OnUpdate_Postfix(GUIHand __instance, GUIHand.GrabMode ___grabMode)
         {
-
-            if (Player.main == null)// || (!CrosshairMenu.Config.NoCrosshairOnFoot && crosshairIsOff)) // skip block if no Player.main instance exists
+            if (Player.main == null) // skip block if no Player.main instance exists
                 return;
-
-/*            if (!CrosshairMenu.Config.NoCrosshairOnFoot || crosshairIsOff)
-            {
-                targetNeedsCrosshair = false;
-            }*/
 
             // getting techType for map room screen, jukebox etc.
             // check if CH needs to be enabled for interaction while on foot/swimming
             // try-catch needed -> throws error if no target in range
+
             try
             {
                 Targeting.GetTarget(Player.main.gameObject, 10, out GameObject getTarget, out float _);
                 CraftData.GetTechType(getTarget, out var _techType);
-                techType = _techType.ToString();
+                techType = _techType.name;        
             }
             catch (NullReferenceException)
             {
-                techType = "";
+                techType = null;
             }
 
             Player.Mode playerMode = Player.main.GetMode();
             bool isNormalOrSitting = playerMode == Player.Mode.Normal || playerMode == Player.Mode.Sitting;
-            GameObject activeTarget = null;
-            activeTarget = __instance.GetActiveTarget();
-            bool targetNeedsCrosshair = (activeTarget && playerMode == Player.Mode.Normal) || textHand || //(isSittingOrSwimming && activeTarget != null)
-                (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType.Split('(')[0]));
+            //GameObject activeTarget = null;
+            //activeTarget = __instance.GetActiveTarget();
+            bool targetNeedsCrosshair = (__instance.GetActiveTarget() && playerMode == Player.Mode.Normal) || textHand || 
+                (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType));
 
 /*            File.AppendAllText("DisableCrosshair_Log.txt",
                 "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
-                "\n GetActiveTarget: " + activeTarget +
-                "\n techType: " + techType +
+                //"\n GetActiveTarget: " + activeTarget +
                 "\n textHand: " + textHand +
                 "\n playerMode: " + playerMode +
+                "\n grabMode: " + ___grabMode +
                 "\n____________________________________");*/
 
             if (crosshairIsOff)
@@ -74,7 +69,6 @@ namespace DisableCrosshairBZ
                     crosshairIsOff = false;
                     return;
                 }
-
                 else return;
             }
 
