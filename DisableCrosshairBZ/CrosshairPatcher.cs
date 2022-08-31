@@ -48,6 +48,7 @@ namespace DisableCrosshairBZ
             {
                 techType = "";
             }
+
             Player.Mode playerMode = Player.main.GetMode();
             bool isNormalOrSitting = playerMode == Player.Mode.Normal || playerMode == Player.Mode.Sitting;
             GameObject activeTarget = null;
@@ -55,18 +56,17 @@ namespace DisableCrosshairBZ
             bool targetNeedsCrosshair = (activeTarget && playerMode == Player.Mode.Normal) || textHand || //(isSittingOrSwimming && activeTarget != null)
                 (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType.Split('(')[0]));
 
-
-            File.AppendAllText("DisableCrosshair_Log.txt",
+/*            File.AppendAllText("DisableCrosshair_Log.txt",
                 "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
                 "\n GetActiveTarget: " + activeTarget +
                 "\n techType: " + techType +
                 "\n textHand: " + textHand +
                 "\n playerMode: " + playerMode +
-                "\n____________________________________");
+                "\n____________________________________");*/
 
             if (crosshairIsOff)
             { 
-                if (((!CrosshairMenu.Config.NoCrosshairOnFoot || targetNeedsCrosshair) && playerMode == Player.Mode.Normal) || 
+                if (((!CrosshairMenu.Config.NoCrosshairOnFoot || targetNeedsCrosshair) && isNormalOrSitting) || 
                    ((!CrosshairMenu.Config.NoCrosshairInPrawnSuit || targetNeedsCrosshair) && Player.main.inExosuit) ||
                    (!CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
                 {
@@ -75,24 +75,12 @@ namespace DisableCrosshairBZ
                     return;
                 }
 
-/*
-                else if (CrosshairMenu.Config.NoCrosshairOnFoot && isSittingOrSwimming)
-                    return;
-                else if (targetNeedsCrosshair ||
-                        (!CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit) ||
-                        (!CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
-                {
-                    HandReticle.main.UnrequestCrosshairHide();
-                    crosshairIsOff = false;
-                    return;
-                }*/
                 else return;
             }
 
             else // Crosshair is currently on
             {
-                if //(targetNeedsCrosshair && (isSittingOrSwimming || Player.main.inExosuit) ||
-                   ((CrosshairMenu.Config.NoCrosshairOnFoot && playerMode == Player.Mode.Normal && !targetNeedsCrosshair) ||
+                if ((CrosshairMenu.Config.NoCrosshairOnFoot && isNormalOrSitting && !targetNeedsCrosshair) ||
                    (CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
                    (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit && !targetNeedsCrosshair))
                 {
@@ -100,15 +88,6 @@ namespace DisableCrosshairBZ
                     crosshairIsOff = true;
                     return;
                 }
-/*                if (targetNeedsCrosshair) // && isSittingOrSwimming) //Player.main.inSeatruckPilotingChair || Player.main.inExosuit)
-                    return;*/
-
-/*                else if (CrosshairMenu.Config.NoCrosshairOnFoot && isSittingOrSwimming)
-                {
-                    HandReticle.main.RequestCrosshairHide();
-                    crosshairIsOff = true;
-                    return;
-                }*/
                 else return;
             }
         }
