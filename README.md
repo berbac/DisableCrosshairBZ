@@ -1,9 +1,9 @@
 # DisableCrosshairBZ
 
-Adds three options to the "General" tab of the Subnautica Below Zero options menu:
+Disables the crosshair when certain conditions are met.
 
- - "No crosshair while piloting seatruck"
- 
- - "No crosshair while piloting prawn suit"
- 
- - "Disable crosshair completely"
+Adds a section "Hide Crosshair" to the "General" tab of the Subnautica options menu:
+
+- "While Piloting Seatruck"
+- "While in Prawn Suit"
+- "While Walking/Swimming"
