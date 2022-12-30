@@ -22,7 +22,7 @@ namespace DisableCrosshairBZ
 
         [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
         [HarmonyPostfix]
-        public static void OnUpdate_Postfix(GUIHand __instance, GUIHand.GrabMode ___grabMode)
+        public static void OnUpdate_Postfix(GUIHand __instance)
         {
             if (Player.main == null) // skip block if no Player.main instance exists
                 return;
@@ -46,7 +46,7 @@ namespace DisableCrosshairBZ
             bool isNormalOrSitting = playerMode == Player.Mode.Normal || playerMode == Player.Mode.Sitting;
             bool targetNeedsCrosshair = (__instance.GetActiveTarget() && playerMode == Player.Mode.Normal) || textHand || 
                 (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType));
-
+            
 /*            File.AppendAllText("DisableCrosshair_Log.txt",
                 "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
                 //"\n GetActiveTarget: " + activeTarget +
@@ -57,9 +57,9 @@ namespace DisableCrosshairBZ
 
             if (crosshairIsOff)
             { 
-                if (((!CrosshairMenu.Config.NoCrosshairOnFoot || targetNeedsCrosshair) && isNormalOrSitting) || 
-                   ((!CrosshairMenu.Config.NoCrosshairInPrawnSuit || targetNeedsCrosshair) && Player.main.inExosuit) ||
-                   (!CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
+                if (((!CrosshairOptions.NoCrosshairOnFoot || targetNeedsCrosshair) && isNormalOrSitting) || 
+                   ((!CrosshairOptions.NoCrosshairInPrawnSuit || targetNeedsCrosshair) && Player.main.inExosuit) ||
+                   (!CrosshairOptions.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
                 {
                     HandReticle.main.UnrequestCrosshairHide();
                     crosshairIsOff = false;
@@ -70,9 +70,9 @@ namespace DisableCrosshairBZ
 
             else // Crosshair is currently on
             {
-                if ((CrosshairMenu.Config.NoCrosshairOnFoot && isNormalOrSitting && !targetNeedsCrosshair) ||
-                   (CrosshairMenu.Config.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
-                   (CrosshairMenu.Config.NoCrosshairInPrawnSuit && Player.main.inExosuit && !targetNeedsCrosshair))
+                if ((CrosshairOptions.NoCrosshairOnFoot && isNormalOrSitting && !targetNeedsCrosshair) ||
+                   (CrosshairOptions.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
+                   (CrosshairOptions.NoCrosshairInPrawnSuit && Player.main.inExosuit && !targetNeedsCrosshair))
                 {
                     HandReticle.main.RequestCrosshairHide();
                     crosshairIsOff = true;

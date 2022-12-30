@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrosshairOptions.cs" />
     <Compile Include="CrosshairPatcher.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="CrosshairMenu.cs" />
