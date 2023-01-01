@@ -12,12 +12,15 @@ namespace DisableCrosshairBZ
         internal static string[] showCrosshairWhilePointingAt = { "MapRoomFunctionality(Clone)", "SeaTruckSleeperModule(Clone)", "Jukebox(Clone)" }; // special cases to show crosshair
         internal static string techType;
         internal static bool textHand;
+        internal static int hideCount;
+        internal static int hideCountOld;
 
         [HarmonyPatch(typeof(HandReticle), "UpdateText")]
         [HarmonyPrefix]
-        public static void SetTextRaw_Prefix(string ___textHand, string ___textHandSubscript)
+        public static void SetTextRaw_Prefix(string ___textHand, string ___textHandSubscript, ref int ___hideCount)
         {
             textHand = !string.IsNullOrEmpty(___textHand + ___textHandSubscript);
+            hideCount = ___hideCount;
         }
 
         [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
@@ -46,14 +49,18 @@ namespace DisableCrosshairBZ
             bool isNormalOrSitting = playerMode == Player.Mode.Normal || playerMode == Player.Mode.Sitting;
             bool targetNeedsCrosshair = (__instance.GetActiveTarget() && playerMode == Player.Mode.Normal) || textHand || 
                 (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType));
-            
-/*            File.AppendAllText("DisableCrosshair_Log.txt",
-                "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
-                //"\n GetActiveTarget: " + activeTarget +
-                "\n textHand: " + textHand +
-                "\n playerMode: " + playerMode +
-                "\n grabMode: " + ___grabMode +
-                "\n____________________________________");*/
+
+            //File.AppendAllText("DisableCrosshair_Log.txt",
+            //    "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
+            //    "\n GetActiveTarget: " + __instance.GetActiveTarget() +
+            //    "\n textHand: " + textHand +
+            //    "\n playerMode: " + playerMode +
+            //    //"\n grabMode: " + ___grabMode +
+            //    "\n hideCount: " + hideCount +
+            //    "\n crosshairIsOff: " + crosshairIsOff +
+            //    "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
+            //    "\n current crosshair type: " + HandReticle.main.CurrentIconType + 
+            //    "\n____________________________________");
 
             if (crosshairIsOff)
             { 
@@ -62,6 +69,11 @@ namespace DisableCrosshairBZ
                    (!CrosshairOptions.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
                 {
                     HandReticle.main.UnrequestCrosshairHide();
+                    if (hideCount >= hideCountOld) // for compatibility with SlotExtenderZero
+                    {
+                        HandReticle.main.UnrequestCrosshairHide();
+                    }
+                    hideCountOld = hideCount;
                     crosshairIsOff = false;
                     return;
                 }
@@ -75,6 +87,11 @@ namespace DisableCrosshairBZ
                    (CrosshairOptions.NoCrosshairInPrawnSuit && Player.main.inExosuit && !targetNeedsCrosshair))
                 {
                     HandReticle.main.RequestCrosshairHide();
+                    if (hideCount <= hideCountOld) // for compatibility with SlotExtenderZero
+                    {
+                        HandReticle.main.RequestCrosshairHide();
+                    }
+                    hideCountOld = hideCount;
                     crosshairIsOff = true;
                     return;
                 }
