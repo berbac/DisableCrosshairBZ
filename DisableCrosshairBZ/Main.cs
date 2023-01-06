@@ -9,7 +9,7 @@ namespace DisableCrosshairBZ
     {
         private const string myGUID = "com.berbac.subnautica.disablecrosshair.mod";
         private const string modName = "DisableCrosshairBZ";
-        private const string versionString = "1.4.1";
+        private const string versionString = "1.4.7";
 
         //private static readonly Harmony harmony = new Harmony(myGUID);
 

@@ -8,12 +8,13 @@ namespace DisableCrosshairBZ
     [HarmonyPatch]
     public static class CrosshairPatcher
     {
-        internal static bool crosshairIsOff;
+        internal static bool ShouldHideCrosshair;
         internal static string[] showCrosshairWhilePointingAt = { "MapRoomFunctionality(Clone)", "SeaTruckSleeperModule(Clone)", "Jukebox(Clone)" }; // special cases to show crosshair
         internal static string techType;
         internal static bool textHand;
         internal static int hideCount;
-        internal static int hideCountOld;
+        //internal static int logTime = DateTime.Now.Second;
+        //internal static int hideCountOld;
 
         [HarmonyPatch(typeof(HandReticle), "UpdateText")]
         [HarmonyPrefix]
@@ -47,9 +48,12 @@ namespace DisableCrosshairBZ
 
             Player.Mode playerMode = Player.main.GetMode();
             bool isNormalOrSitting = playerMode == Player.Mode.Normal || playerMode == Player.Mode.Sitting;
-            bool targetNeedsCrosshair = (__instance.GetActiveTarget() && playerMode == Player.Mode.Normal) || textHand || 
+            bool targetNeedsCrosshair = (__instance.GetActiveTarget() && playerMode == Player.Mode.Normal && !Player.main.cinematicModeActive) || 
+                textHand || 
                 (Player.main.IsInsideWalkable() && Array.Exists(showCrosshairWhilePointingAt, element => element == techType));
 
+            //if (DateTime.Now.Second != logTime)
+            //{
             //File.AppendAllText("DisableCrosshair_Log.txt",
             //    "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
             //    "\n GetActiveTarget: " + __instance.GetActiveTarget() +
@@ -60,21 +64,23 @@ namespace DisableCrosshairBZ
             //    "\n crosshairIsOff: " + crosshairIsOff +
             //    "\n targetNeedsCrosshair: " + targetNeedsCrosshair +
             //    "\n current crosshair type: " + HandReticle.main.CurrentIconType + 
+            //    "\n" + DateTime.Now +
             //    "\n____________________________________");
-
-            if (crosshairIsOff)
+            //    logTime = DateTime.Now.Second;
+            //}
+            if (hideCount > 0)
             { 
                 if (((!CrosshairOptions.NoCrosshairOnFoot || targetNeedsCrosshair) && isNormalOrSitting) || 
                    ((!CrosshairOptions.NoCrosshairInPrawnSuit || targetNeedsCrosshair) && Player.main.inExosuit) ||
                    (!CrosshairOptions.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair))
                 {
-                    HandReticle.main.UnrequestCrosshairHide();
-                    if (hideCount >= hideCountOld) // for compatibility with SlotExtenderZero
-                    {
-                        HandReticle.main.UnrequestCrosshairHide();
-                    }
-                    hideCountOld = hideCount;
-                    crosshairIsOff = false;
+                    //HandReticle.main.UnrequestCrosshairHide();
+                    //if (hideCount >= hideCountOld) // for compatibility with SlotExtenderZero
+                    //{
+                    //    HandReticle.main.UnrequestCrosshairHide();
+                    //}
+                    //hideCountOld = hideCount;
+                    ShouldHideCrosshair = false;
                     return;
                 }
                 else return;
@@ -86,16 +92,29 @@ namespace DisableCrosshairBZ
                    (CrosshairOptions.NoCrosshairInSeatruck && Player.main.inSeatruckPilotingChair) ||
                    (CrosshairOptions.NoCrosshairInPrawnSuit && Player.main.inExosuit && !targetNeedsCrosshair))
                 {
-                    HandReticle.main.RequestCrosshairHide();
-                    if (hideCount <= hideCountOld) // for compatibility with SlotExtenderZero
-                    {
-                        HandReticle.main.RequestCrosshairHide();
-                    }
-                    hideCountOld = hideCount;
-                    crosshairIsOff = true;
+                    //HandReticle.main.RequestCrosshairHide();
+                    //if (hideCount <= hideCountOld) // for compatibility with SlotExtenderZero
+                    //{
+                    //    HandReticle.main.RequestCrosshairHide();
+                    //}
+                    //hideCountOld = hideCount;
+                    ShouldHideCrosshair = true;
                     return;
                 }
                 else return;
+            }
+        }
+        [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.UpdateText))]
+        [HarmonyPostfix]
+        public static void SetHideCount(ref int ___hideCount)
+        {
+            if (ShouldHideCrosshair)
+            {
+                ___hideCount = 1;
+            }
+            else
+            {
+                ___hideCount = 0;
             }
         }
     }

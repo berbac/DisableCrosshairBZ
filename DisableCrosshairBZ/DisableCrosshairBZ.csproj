@@ -73,6 +73,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)bin\Debug\DisableCrosshairBZ.dll" "D:\SteamWin\steamapps\common\SubnauticaZero\QMods\DisableCrosshairBZ"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)bin\Debug\DisableCrosshairBZ.dll" "D:\SteamWin\steamapps\common\SubnauticaZero\QMods\DisableCrosshairBZ"
+copy "$(ProjectDir)bin\Debug\DisableCrosshairBZ.dll" "$(ProjectDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
