@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using System;
-using System.IO;
 using UnityEngine;
+//using System.IO;
 
 namespace DisableCrosshairBZ
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(GUIHand))]
     public static class CrosshairPatcher
     {
         internal static bool ShouldHideCrosshair;
@@ -16,7 +16,7 @@ namespace DisableCrosshairBZ
         //internal static int logTime = DateTime.Now.Second;
         //internal static int hideCountOld;
 
-        [HarmonyPatch(typeof(HandReticle), "UpdateText")]
+        [HarmonyPatch(typeof(HandReticle), nameof(HandReticle.UpdateText))]
         [HarmonyPrefix]
         public static void SetTextRaw_Prefix(string ___textHand, string ___textHandSubscript, ref int ___hideCount)
         {
@@ -24,7 +24,7 @@ namespace DisableCrosshairBZ
             hideCount = ___hideCount;
         }
 
-        [HarmonyPatch(typeof(GUIHand), "OnUpdate")]
+        [HarmonyPatch(nameof(GUIHand.OnUpdate))]
         [HarmonyPostfix]
         public static void OnUpdate_Postfix(GUIHand __instance)
         {
