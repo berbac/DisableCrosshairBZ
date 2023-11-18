@@ -1,25 +1,27 @@
 ﻿using HarmonyLib;
+//using System.Reflection;
+using BepInEx;
 using System.Reflection;
-using QModManager.API.ModLoading;
 
 namespace DisableCrosshairBZ
 {
-    [QModCore]
-    public static class Loader
+    [BepInPlugin(myGUID, modName, versionString)]
+    public class DisableCrosshairBZ : BaseUnityPlugin
     {
         private const string myGUID = "com.berbac.subnautica.disablecrosshair.mod";
         private const string modName = "DisableCrosshairBZ";
-        private const string versionString = "1.4.7";
+        private const string versionString = "1.5.0";
 
-        //private static readonly Harmony harmony = new Harmony(myGUID);
+        private static readonly Harmony harmony = new Harmony(myGUID);
 
-        [QModPatch]
-        public static void Initialize()
+        public void Awake()
+     
         {
-            Harmony.CreateAndPatchAll(typeof(CrosshairPatcher));
-            //harmony.PatchAll(Assembly.GetExecutingAssembly());
+            //Harmony.CreateAndPatchAll(typeof(CrosshairPatcher));
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             CrosshairMenu.Patch();
         }
     }
 }
+    
